@@ -7,23 +7,25 @@ import Search from "./Search";
 function Ingredients() {
   const [userIndgredients, setUserIngredients] = useState([]);
 
-  useEffect(() => {
-    fetch(
-      "https://react-app-81b61-default-rtdb.europe-west1.firebasedatabase.app/ingredients.json"
-    )
-      .then((response) => response.json())
-      .then((responseData) => {
-        const loadedIngredients = [];
-        for (const key in responseData) {
-          loadedIngredients.push({
-            id: key,
-            title: responseData[key].title,
-            amount: responseData[key].amount,
-          });
-        }
-        setUserIngredients(loadedIngredients);
-      });
-  }, []);
+  ////We can not use this fetch cos we already use fetch ingrediens from search component
+  ////
+  // useEffect(() => {
+  //   fetch(
+  //     "https://react-app-81b61-default-rtdb.europe-west1.firebasedatabase.app/ingredients.json"
+  //   )
+  //     .then((response) => response.json())
+  //     .then((responseData) => {
+  //       const loadedIngredients = [];
+  //       for (const key in responseData) {
+  //         loadedIngredients.push({
+  //           id: key,
+  //           title: responseData[key].title,
+  //           amount: responseData[key].amount,
+  //         });
+  //       }
+  //       setUserIngredients(loadedIngredients);
+  //     });
+  // }, []);
 
   useEffect(() => {
     console.log("Rendering ingredients", userIndgredients);
@@ -31,7 +33,7 @@ function Ingredients() {
 
   const filteredIngredientsHandler = useCallback((filtredIngredients) => {
     setUserIngredients(filtredIngredients);
-  },[]);
+  }, []);
 
   const addIngredientHandler = (ingredient) => {
     fetch(
@@ -60,9 +62,16 @@ function Ingredients() {
   };
 
   const removeIngredientHandler = (ingredientId) => {
-    setUserIngredients((prevIngredients) =>
-      prevIngredients.filter((ing) => ing.id !== ingredientId)
-    );
+    fetch(
+      `https://react-app-81b61-default-rtdb.europe-west1.firebasedatabase.app/ingredients/${ingredientId}.json`,
+      {
+        method: "DELETE",
+      }
+    ).then((response) => {
+      setUserIngredients((prevIngredients) =>
+        prevIngredients.filter((ing) => ing.id !== ingredientId)
+      );
+    });
   };
 
   return (
