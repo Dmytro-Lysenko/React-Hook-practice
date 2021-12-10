@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 
 import IngredientForm from "./IngredientForm";
 import IngredientList from "./IngredientList";
@@ -24,6 +24,14 @@ function Ingredients() {
         setUserIngredients(loadedIngredients);
       });
   }, []);
+
+  useEffect(() => {
+    console.log("Rendering ingredients", userIndgredients);
+  }, [userIndgredients]);
+
+  const filteredIngredientsHandler = useCallback((filtredIngredients) => {
+    setUserIngredients(filtredIngredients);
+  },[]);
 
   const addIngredientHandler = (ingredient) => {
     fetch(
@@ -62,7 +70,7 @@ function Ingredients() {
       <IngredientForm onAddIngredient={addIngredientHandler} />
 
       <section>
-        <Search />
+        <Search onLoadIngredients={filteredIngredientsHandler} />
         <IngredientList
           ingredients={userIndgredients}
           onRemoveItem={removeIngredientHandler}
